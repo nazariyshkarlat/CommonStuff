@@ -47,7 +47,7 @@ class ViewModel(private val application: Application, private val postService: P
     private fun sendBackendMessage(fbclId: String?) {
         viewModelScope.launch {
             try {
-                val result = postService.sendMessage(appsFlyerUID!!, "test.bundle.com", fbclId, pushFuture.get()!!)
+                val result = postService.sendMessage(appsFlyerUID!!, application.packageName, fbclId, pushFuture.get()!!)
                 if (result.code() == 200){
                     PrefsUtils.setLinkCache(result.body()!!.message, preferences)
                     startAppState.postValue(StartAppStates.ShowWebView(result.body()!!.message))
