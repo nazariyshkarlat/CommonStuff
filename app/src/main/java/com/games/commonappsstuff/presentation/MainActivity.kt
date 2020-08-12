@@ -1,26 +1,33 @@
 package com.games.commonappsstuff.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.appsflyer.AppsFlyerLib
 import com.games.commonappsstuff.R
+import com.games.commonappsstuff.di.ViewModelModule
 import com.games.commonappsstuff.ext.addFragment
 import com.games.commonappsstuff.presentation.fragment.AppFragment
 import com.games.commonappsstuff.presentation.fragment.SplashScreenFragment
 
 abstract class MainActivity : AppCompatActivity() {
 
-    abstract val viewModel: ViewModel
     abstract val startAppCallback: StartAppCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main_fragment_container)
+
+        val viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return ViewModelModule.viewModel as T
+            }
+        })[ViewModel::class.java]
 
         viewModel.startAppState.observe(this, Observer {
             when (val state = it) {
