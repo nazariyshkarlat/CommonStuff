@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.appsflyer.AppsFlyerLib
+import com.games.commonappsstuff.BuildConfig
 import com.games.commonappsstuff.R
 import com.games.commonappsstuff.di.ViewModelModule
 import com.games.commonappsstuff.ext.addFragment
@@ -17,6 +18,7 @@ import com.games.commonappsstuff.presentation.fragment.SplashScreenFragment
 abstract class MainActivity : AppCompatActivity() {
 
     abstract val startAppCallback: StartAppCallback
+    abstract val isTest: Boolean
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,17 +27,26 @@ abstract class MainActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : androidx.lifecycle.ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return ViewModelModule.viewModel as T
+                return (ViewModelModule.viewModel).apply {
+                    isTest = if(BuildConfig.DEBUG) this@MainActivity.isTest else false
+                } as T
             }
         })[ViewModel::class.java]
 
         viewModel.startAppState.observe(this, Observer {
             when (val state = it) {
-                is ViewModel.StartAppStates.ShowSplashScreen -> addFragment(
-                    SplashScreenFragment(),
-                    R.id.mainFrameLayout
-                )
+                is ViewModel.StartAppStates.ShowSplashScreen -> {
+                    viewModel.startAppIfWaitingTimeOver()
+                    addFragment(
+                        SplashScreenFragment(),
+                        R.id.mainFrameLayout
+                    )
+                }
                 is ViewModel.StartAppStates.ShowApp -> {
+                    val currentFragment = supportFragmentManager.findFragmentById(R.id.mainFrameLayout)
+                    if(currentFragment is AppFragment){
+                        supportFragmentManager.beginTransaction().remove(currentFragment).commitNow()
+                    }
                     startAppCallback.onShowApp()
                     AppsFlyerLib.getInstance().trackEvent(this, "start_game", null)
                     Log.d("DEFERRED_DEEP_LINK", "start_game")
@@ -43,6 +54,7 @@ abstract class MainActivity : AppCompatActivity() {
                 is ViewModel.StartAppStates.ShowWebView -> {
 
                     if(state.withSplashScreen){
+                        viewModel.startAppIfWaitingTimeOver()
                         addFragment(
                             SplashScreenFragment(),
                             R.id.mainFrameLayout

@@ -7,9 +7,14 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.games.commonappsstuff.R
 import com.games.commonappsstuff.presentation.fragment.base.BaseFragment
 import kotlinx.android.synthetic.main.app_view_layout.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -31,11 +36,11 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 appView.visibility = View.VISIBLE
-                println(targetFragment)
                 targetFragment?.let {
-                    (activity as AppCompatActivity).supportFragmentManager.beginTransaction().remove(
-                        it
-                    ).commit()
+                    (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
+                        .remove(
+                            it
+                        ).commit()
                 }
             }
         }

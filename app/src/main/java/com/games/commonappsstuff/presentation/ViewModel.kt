@@ -23,6 +23,7 @@ class ViewModel(private val application: Application, private val postService: P
 
     private var pushFuture: SettableFuture<String?> = SettableFuture.create()
     val startAppState = SingleLiveEvent<StartAppStates>()
+    var isTest = false
 
     private var job: Job? = null
 
@@ -47,9 +48,10 @@ class ViewModel(private val application: Application, private val postService: P
     private fun sendBackendMessage(fbclId: String?) {
         viewModelScope.launch {
             try {
-                val result = postService.sendMessage(appsFlyerUID!!, application.packageName, fbclId, pushFuture.get()!!)
+                val result = postService.sendMessage(appsFlyerUID!!, if(isTest) "test.bundle.com" else application.packageName, fbclId, pushFuture.get()!!)
                 if (result.code() == 200){
-                    PrefsUtils.setLinkCache(result.body()!!.message, preferences)
+                    if(!isTest)
+                        PrefsUtils.setLinkCache(result.body()!!.message, preferences)
                     startAppState.postValue(StartAppStates.ShowWebView(result.body()!!.message))
                 }else{
                     startAppState.postValue(StartAppStates.ShowApp)
@@ -62,10 +64,10 @@ class ViewModel(private val application: Application, private val postService: P
     }
 
 
-    private fun startAppIfWaitingTimeOver(){
+    fun startAppIfWaitingTimeOver(){
         job = viewModelScope.launch{
             delay(Const.TIMEOUT)
-            if(startAppState.value == StartAppStates.ShowSplashScreen) {
+            if(startAppState.value == StartAppStates.ShowSplashScreen || (startAppState.value is StartAppStates.ShowWebView && (startAppState.value as StartAppStates.ShowWebView).withSplashScreen)) {
                 startAppState.postValue(StartAppStates.ShowApp)
                 Log.d("DEFERRED_DEEP_LINK", "waiting_time_is_over")
             }
@@ -77,7 +79,6 @@ class ViewModel(private val application: Application, private val postService: P
         AppsFlyerLib.getInstance().startTracking(application)
         appsFlyerUID = AppsFlyerLib.getInstance().getAppsFlyerUID(application)
         Log.d("DEFERRED_DEEP_LINK", "af_init_start")
-        startAppIfWaitingTimeOver()
     }
 
     private fun initFirebase(){
