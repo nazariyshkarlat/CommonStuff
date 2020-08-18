@@ -31,18 +31,15 @@ class ViewModel(private val application: Application, private val postService: P
 
      init{
         val networkIsAbsent = connectionManager.isNetworkAbsent()
+
+         initFirebase()
+         initAppsFlyer(if(!PrefsUtils.linkIsCached(preferences) && !networkIsAbsent) getAppsFlyerConversionListener() else null)
+
          startAppState.value =when {
              networkIsAbsent -> StartAppStates.ShowApp
              PrefsUtils.linkIsCached(preferences) -> StartAppStates.ShowWebView(PrefsUtils.getLinkCache(preferences), true)
              else -> StartAppStates.ShowSplashScreen
          }
-
-        if(!networkIsAbsent) {
-            if (!PrefsUtils.linkIsCached(preferences)) {
-                initFirebase()
-                initAppsFlyer(getAppsFlyerConversionListener())
-            }
-        }
     }
 
     private fun sendBackendMessage(fbclId: String?) {
@@ -74,7 +71,7 @@ class ViewModel(private val application: Application, private val postService: P
         }
     }
 
-    private fun initAppsFlyer(conversionListener: AppsFlyerConversionListener){
+    private fun initAppsFlyer(conversionListener: AppsFlyerConversionListener?){
         AppsFlyerLib.getInstance().init(Const.APPSFLYER_DEV_KEY, conversionListener, application.applicationContext)
         AppsFlyerLib.getInstance().startTracking(application)
         appsFlyerUID = AppsFlyerLib.getInstance().getAppsFlyerUID(application)
