@@ -7,14 +7,9 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.games.commonappsstuff.R
 import com.games.commonappsstuff.presentation.fragment.base.BaseFragment
 import kotlinx.android.synthetic.main.app_view_layout.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("SetJavaScriptEnabled")
