@@ -14,6 +14,8 @@ import com.games.commonappsstuff.di.ViewModelModule
 import com.games.commonappsstuff.ext.addFragment
 import com.games.commonappsstuff.presentation.fragment.AppFragment
 import com.games.commonappsstuff.presentation.fragment.SplashScreenFragment
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.messaging.FirebaseMessaging
 
 abstract class MainActivity : AppCompatActivity() {
 
@@ -65,6 +67,7 @@ abstract class MainActivity : AppCompatActivity() {
                         setTargetFragment(this@MainActivity.supportFragmentManager.findFragmentById(R.id.mainFrameLayout), 213)
                         arguments = bundleOf(AppFragment.LINK to state.link)
                     }, R.id.mainFrameLayout)
+                    FirebaseAnalytics.getInstance(this).logEvent("start_webview", null)
                     AppsFlyerLib.getInstance().trackEvent(this,  "start_webview", null)
                     Log.d("DEFERRED_DEEP_LINK", "start_webview")
                 }
