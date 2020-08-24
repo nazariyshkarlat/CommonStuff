@@ -28,9 +28,20 @@ fun AppCompatActivity.addFragment(fragment: Fragment, container: Int) {
         .commit()
 }
 
-fun AppCompatActivity.replaceFragment(fragment: Fragment, container: Int, startAnim: Int = 0, endAnim: Int = 0) {
-    supportFragmentManager.beginTransaction()
+fun AppCompatActivity.replaceFragment(
+    fragment: Fragment,
+    container: Int,
+    startAnim: Int = 0,
+    endAnim: Int = 0,
+    addToBackStack: Boolean = true
+) {
+    with(supportFragmentManager.beginTransaction()
         .setCustomAnimations(startAnim, endAnim, 0, 0)
-        .replace(container, fragment)
-        .commit()
+        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        .replace(container, fragment)) {
+
+        if (addToBackStack)
+            this.addToBackStack(fragment.toString())
+        this.commit()
+    }
 }

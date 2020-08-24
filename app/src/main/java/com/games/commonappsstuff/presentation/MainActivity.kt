@@ -10,12 +10,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.appsflyer.AppsFlyerLib
 import com.games.commonappsstuff.BuildConfig
 import com.games.commonappsstuff.R
-import com.games.commonappsstuff.di.ViewModelModule
+import com.games.commonappsstuff.connection.backend.PostService
+import com.games.commonappsstuff.di.NetworkModule
+import com.games.commonappsstuff.di.PrefsModule
 import com.games.commonappsstuff.ext.addFragment
 import com.games.commonappsstuff.presentation.fragment.AppFragment
 import com.games.commonappsstuff.presentation.fragment.SplashScreenFragment
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.messaging.FirebaseMessaging
 
 abstract class MainActivity : AppCompatActivity() {
 
@@ -29,7 +30,10 @@ abstract class MainActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : androidx.lifecycle.ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return (ViewModelModule.viewModel).apply {
+                return (ViewModel(application,
+                    NetworkModule.getService(PostService::class.java),
+                    NetworkModule.connectionManager,
+                    PrefsModule.sharedPreferences)).apply {
                     isTest = if(BuildConfig.DEBUG) this@MainActivity.isTest else false
                 } as T
             }

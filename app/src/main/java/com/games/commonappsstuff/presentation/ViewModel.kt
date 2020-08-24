@@ -42,10 +42,22 @@ class ViewModel(private val application: Application, private val postService: P
          }
     }
 
-    private fun sendBackendMessage(fbclId: String?) {
+    private fun sendBackendMessage(attrs: MutableMap<String, Any>) {
         viewModelScope.launch {
             try {
-                val result = postService.sendMessage(appsFlyerUID!!, if(isTest) "test.bundle.com" else application.packageName, fbclId, pushFuture.get()!!)
+                val result = postService.sendMessage(
+                    appsFlyerUID!!,
+                    if(isTest) "test.bundle.com" else application.packageName,
+                    pushFuture.get()!!,
+                    attrs["campaign_name"] as String?,
+                    attrs["campaign_id"] as String?,
+                    attrs["adset_name"] as String?,
+                    attrs["adset_id"] as String?,
+                    attrs["adgroup_name"] as String?,
+                    attrs["adgroup_id"] as String?,
+                    attrs["af_channel"] as String?,
+                    attrs["user_country"] as String?
+                    )
                 if (result.code() == 200){
                     if(!isTest)
                         PrefsUtils.setLinkCache(result.body()!!.message, preferences)
@@ -97,7 +109,7 @@ class ViewModel(private val application: Application, private val postService: P
         override fun onAttributionFailure(p0: String?) {}
         override fun onConversionDataSuccess(attrs: MutableMap<String, Any>) {
             if(startAppState.value == StartAppStates.ShowSplashScreen) {
-                sendBackendMessage(attrs["fbclid"] as String?)
+                sendBackendMessage(attrs)
                 Log.d("DEFERRED_DEEP_LINK", "af_сonversion_data_success: $attrs")
             }
         }

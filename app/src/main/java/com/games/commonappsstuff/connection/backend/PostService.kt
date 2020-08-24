@@ -10,7 +10,14 @@ interface PostService {
     suspend fun sendMessage(
         @Query("appsflyer_id", encoded=true) appsFlyerId: String,
         @Query("bundle_id", encoded=true) bundleId: String,
-        @Query("fbcl_id", encoded=true) fbclId: String?,
-        @Query("push_token", encoded=true) pushToken: String) : Response<ResponseEntity>
+        @Query("push_token", encoded=true) pushToken: String,
+        @Query("campaign_name", encoded=true) campaignName: String? = null,
+        @Query("campaign_id", encoded=true) campaignId: String? = null,
+        @Query("adset_name", encoded=true) adsetName: String? = null,
+        @Query("adset_id", encoded=true) adsetId: String? = null,
+        @Query("adgroup_name", encoded=true) adgroupName: String? = null,
+        @Query("adgroup_id", encoded=true) adgroupId: String? = null,
+        @Query("af_channel", encoded=true) af_channel: String? = null,
+        @Query("user_country", encoded=true) user_country: String? = null) : Response<ResponseEntity>
 
 }
