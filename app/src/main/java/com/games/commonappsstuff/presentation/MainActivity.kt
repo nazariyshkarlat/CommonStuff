@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.appsflyer.AppsFlyerLib
 import com.games.commonappsstuff.BuildConfig
+import com.games.commonappsstuff.PrefsUtils
 import com.games.commonappsstuff.R
-import com.games.commonappsstuff.connection.backend.PostService
+import com.games.commonappsstuff.connection.backend.BackendService
 import com.games.commonappsstuff.di.NetworkModule
 import com.games.commonappsstuff.di.PrefsModule
 import com.games.commonappsstuff.ext.addFragment
@@ -23,6 +24,11 @@ abstract class MainActivity : AppCompatActivity() {
     abstract val startAppCallback: StartAppCallback
     abstract val isTest: Boolean
 
+    companion object {
+        const val NOTIFICATIONS_REQUEST_CODE = 7534
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_fragment_container)
@@ -31,11 +37,10 @@ abstract class MainActivity : AppCompatActivity() {
             override fun <T : androidx.lifecycle.ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return (ViewModel(application,
-                    NetworkModule.getService(PostService::class.java),
-                    NetworkModule.connectionManager,
-                    PrefsModule.sharedPreferences)).apply {
+                    NetworkModule.getService(BackendService::class.java),
+                    NetworkModule.connectionManager).apply {
                     isTest = if(BuildConfig.DEBUG) this@MainActivity.isTest else false
-                } as T
+                } as T)
             }
         })[ViewModel::class.java]
 
@@ -77,6 +82,12 @@ abstract class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        if(savedInstanceState == null){
+            if (intent.getIntExtra("REQUEST_CODE", 0) == NOTIFICATIONS_REQUEST_CODE){
+                viewModel.sendNotificationOpenEvent()
+            }
+        }
 
     }
 

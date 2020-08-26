@@ -4,10 +4,10 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
-interface PostService {
+interface BackendService {
 
     @GET("/")
-    suspend fun sendMessage(
+    suspend fun sendFirstOpenMessage(
         @Query("appsflyer_id", encoded=true) appsFlyerId: String,
         @Query("bundle_id", encoded=true) bundleId: String,
         @Query("push_token", encoded=true) pushToken: String,
@@ -20,4 +20,8 @@ interface PostService {
         @Query("af_channel", encoded=true) af_channel: String? = null,
         @Query("user_country", encoded=true) user_country: String? = null) : Response<ResponseEntity>
 
+    @GET("/event")
+    suspend fun setNotificationOpenEvent(
+        @Query("appsflyer_id", encoded=true) appsFlyerId: String,
+        @Query("push_open") pushOpen: Int = 1)
 }
