@@ -26,7 +26,7 @@ class SplashScreenFragment : BaseFragment(R.layout.splash_screen_layout){
 
     private fun startAnimation() {
         val animation =
-            ObjectAnimator.ofInt(progressBar, "progress", 0, 100 * 100)
+            ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, 100 * 100)
         animation.duration = TIMEOUT
         animation.interpolator = LinearInterpolator()
         animation.start()

@@ -23,3 +23,7 @@
 -keep public class com.google.firebase.messaging.FirebaseMessagingService {
   public *;
 }
+
+-keep public class com.android.installreferrer.** { *; }
+
+-keep class com.games.commonappsstuff.connection.backend.** { *; }

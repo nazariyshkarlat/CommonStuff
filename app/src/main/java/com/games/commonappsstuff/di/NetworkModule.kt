@@ -63,9 +63,8 @@ object NetworkModule {
     private fun getInterceptor(): okhttp3.Interceptor =
         HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG)
-                HttpLoggingInterceptor.Level.BODY
+                HttpLoggingInterceptor.Level.BASIC
             else
                 HttpLoggingInterceptor.Level.NONE
-
         }
 }

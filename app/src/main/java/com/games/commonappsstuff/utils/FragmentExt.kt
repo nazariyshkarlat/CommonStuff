@@ -1,4 +1,4 @@
-package com.games.commonappsstuff.ext
+package com.games.commonappsstuff.utils
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -24,6 +24,7 @@ fun AppCompatActivity.navigateBack(fragment: Fragment) {
 
 fun AppCompatActivity.addFragment(fragment: Fragment, container: Int) {
     supportFragmentManager.beginTransaction()
+        .addToBackStack(null)
         .add(container, fragment, fragment::class.java.name)
         .commit()
 }

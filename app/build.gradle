@@ -53,4 +53,9 @@ dependencies {
 
     // appsflyer
     implementation "com.appsflyer:af-android-sdk:$appsflyer_version"
+
+    implementation "com.android.installreferrer:installreferrer:$installreferrer_version"
+
+    implementation "com.facebook.android:facebook-android-sdk:$facebook_sdk_version"
+
 }

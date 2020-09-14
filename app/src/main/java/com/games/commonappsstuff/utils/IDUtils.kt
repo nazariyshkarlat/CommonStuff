@@ -1,4 +1,4 @@
-package com.games.commonappsstuff.ext
+package com.games.commonappsstuff.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
