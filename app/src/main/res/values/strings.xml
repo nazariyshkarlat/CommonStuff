@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notifications_channel_name">App notifications</string>
-    <string name="facebook_app_id">348978043129965</string>
 </resources>

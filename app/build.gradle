@@ -18,6 +18,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -30,8 +34,8 @@ dependencies {
 
     // view model
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
 
     // retrofit and okhttp
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -56,6 +60,14 @@ dependencies {
 
     implementation "com.android.installreferrer:installreferrer:$installreferrer_version"
 
-    implementation "com.facebook.android:facebook-android-sdk:$facebook_sdk_version"
+    implementation 'com.facebook.shimmer:shimmer:0.5.0@aar'
+
+    implementation (project(":UserX-2.9.4")){
+        transitive true
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
+
+    //ampitude
+    implementation "com.amplitude:android-sdk:$amplitude_version"
 
 }

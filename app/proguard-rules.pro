@@ -8,9 +8,9 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+   public *;
+}
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
@@ -27,3 +27,8 @@
 -keep public class com.android.installreferrer.** { *; }
 
 -keep class com.games.commonappsstuff.connection.backend.** { *; }
+
+-keep class pro.userx.** { *; }
+-dontwarn pro.userx.**
+-keep class com.google.android.gms.ads.** { *; }
+-dontwarn okio.**

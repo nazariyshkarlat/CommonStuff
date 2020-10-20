@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 object NetworkModule {
 
-    private const val BASE_URL = "http://194.87.96.30:8080"
+    private const val BASE_URL = "https://plagoo.cf"
 
     lateinit var connectionManager: ConnectionManager
     private lateinit var retrofit: Retrofit

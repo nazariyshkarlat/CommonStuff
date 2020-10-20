@@ -22,6 +22,7 @@ class AppView @JvmOverloads constructor(
         settings.javaScriptEnabled = true
         settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL
         settings.loadWithOverviewMode = true
+        settings.userAgentString = System.getProperty("http.agent")
         settings.useWideViewPort = true
         settings.allowFileAccess = true
         settings.mixedContentMode = 0

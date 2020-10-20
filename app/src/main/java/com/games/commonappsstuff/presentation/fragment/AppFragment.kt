@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,11 +16,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProviders
-import com.facebook.FacebookSdk
+import com.appsflyer.AppsFlyerLib
+import com.games.commonappsstuff.App
 import com.games.commonappsstuff.R
 import com.games.commonappsstuff.di.NetworkModule
+import com.games.commonappsstuff.presentation.ViewModel
 import com.games.commonappsstuff.presentation.fragment.base.BaseFragment
+import com.games.commonappsstuff.utils.PrefsUtils
+import com.games.commonappsstuff.utils.ViewUtils.showPopup
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.app_view_layout.*
+import pro.userx.UserX
 
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -32,6 +37,8 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
         var canGoBack = false
     }
 
+    private var viewModel: ViewModel? = null
+
     private var mUploadMessage: ValueCallback<Uri>? = null
     private val READ_STORAGE = 3214
     private val REQUEST_SELECT_FILE = 100
@@ -39,6 +46,7 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
     private var fileChooserParams: WebChromeClient.FileChooserParams? = null
     private var uploadMessage: ValueCallback<Array<Uri>>? = null
     private var link : String? = null
+    private var lastLink: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,22 +54,37 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
 
         Log.d(LINK, arguments?.getString(LINK).toString())
 
-        val viewModel = activity?.run {
+        viewModel = activity?.run {
             ViewModelProviders.of(this)
                 .get(com.games.commonappsstuff.presentation.ViewModel::class.java)
         }
+
+        UserX.setWebView(appView)
 
         canGoBack = false
 
         appView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+
+                App.sendAmplitudeMessage("webview url load finished", mapOf("url" to url))
+
                 if(appView != null) {
+
+                    if(lastLink == null){
+                        FirebaseAnalytics.getInstance(activity!!).logEvent("start_webview", null)
+                        AppsFlyerLib.getInstance()?.trackEvent(activity!!, "start_webview", null)
+                        UserX.addScreenName(AppFragment::class.java, "Webview")
+                    }
+
+                    checkAndShowPopup(url.toString())
                     viewModel?.stopWaitingTimer()
                     appView.visibility = View.VISIBLE
                     canGoBack = appView.canGoBack()
                     removeSplashScreen()
+                    lastLink = url
                 }
+
             }
 
             @SuppressWarnings("deprecation")
@@ -74,6 +97,10 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
                     url.startsWith("tel:") -> {
                         startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(url)))
                         return true
+                    }
+                    url.startsWith("https://pay.paymentsllc.com/pay/") -> {
+                        sendOpenPaymentPageEvent()
+                        return false
                     }
                     else -> {
                         super.shouldOverrideUrlLoading(view, url)
@@ -95,6 +122,11 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
                     uri.toString().startsWith("tel:") -> {
                         startActivity(Intent(Intent.ACTION_DIAL, uri))
                         true
+                    }
+                    uri.toString().startsWith("https://pay.paymentsllc.com/pay/") -> {
+                        UserX.stopScreenRecording()
+                        sendOpenPaymentPageEvent()
+                        return false
                     }
                     else -> {
                         super.shouldOverrideUrlLoading(view, request)
@@ -181,7 +213,7 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
             mUploadMessage?.onReceiveValue(result)
             mUploadMessage = null
         } else Toast.makeText(
-            FacebookSdk.getApplicationContext(),
+            context!!,
             "Failed to Upload Image",
             Toast.LENGTH_LONG
         ).show()
@@ -230,6 +262,18 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
                         it
                     ).commit()
             }
+        }
+    }
+
+
+    private fun sendOpenPaymentPageEvent(){
+        viewModel?.sendPaymentPageOpenEvent()
+    }
+
+
+    private fun checkAndShowPopup(link: String){
+        if(CookieManager.getInstance().getCookie(link).contains("_gat_auth=1") && !App.popupWasShown) {
+            (activity as? AppCompatActivity)?.showPopup()
         }
     }
 

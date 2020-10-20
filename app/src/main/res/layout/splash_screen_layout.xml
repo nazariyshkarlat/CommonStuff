@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <View
-        android:id="@+id/splashScreenLayoutOval"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/splash_oval"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@android:color/white"
+        android:layout_gravity="top"
+        android:elevation="8dp">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="2000">
+
+        <View
+            android:layout_width="46dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical|start"
+            android:background="#F3F3F3"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="center_vertical|end"
+            android:background="#F3F3F3"/>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </FrameLayout>
+
+    <com.games.commonappsstuff.presentation.view.CircularProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"/>
 
-    <ProgressBar
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:id="@+id/progressBar"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:indeterminate="false"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="100dp"
-        android:progressDrawable="@drawable/my_progress_bar"/>
+        android:layout_height="52dp"
+        android:elevation="8dp"
+        android:background="@android:color/white"
+        android:layout_gravity="bottom"/>
 
 </FrameLayout>

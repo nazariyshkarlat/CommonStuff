@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="popupTextColor">#E19B36</color>
+    <color name="popupOutlineTextColor">#182D5B</color>
+    <color name="popupButtonTextColor">#FFFFFF</color>
+    <color name="red_color">#F83D2F</color>
+
     <color name="splashColor">#FECF00</color>
 </resources>
