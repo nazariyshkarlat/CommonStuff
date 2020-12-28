@@ -15,12 +15,15 @@ object PrefsUtils {
     private const val FB_APP_ID = "FB_APP_ID"
     private const val POPUP_INFO = "POPUP_INFO"
     private const val AMPLITUDE_API_KEY = "AMPLITUDE_API_KEY"
+    private const val ADVERTISING_ID = "ADVERTISING_ID"
 
     fun popupWasShown(): Boolean = PrefsModule.sharedPreferences.getBoolean(POPUP_WAS_SHOWN, false)
 
     fun linkIsCached(): Boolean = PrefsModule.sharedPreferences.contains(AppFragment.LINK)
 
     fun getLinkCache(): String? = PrefsModule.sharedPreferences.getString(AppFragment.LINK, null)
+
+    fun getAdvertisingId(): String? = PrefsModule.sharedPreferences.getString(ADVERTISING_ID, null)
 
     fun getAppsFlyerId(): String? = PrefsModule.sharedPreferences.getString(APPS_FLYER_ID, null)
 
@@ -36,6 +39,10 @@ object PrefsUtils {
 
     fun setLinkCache(link: String) {
         PrefsModule.sharedPreferences.edit().putString(AppFragment.LINK, link).apply()
+    }
+
+    fun setAdvertisingId(advertisingId: String) {
+        PrefsModule.sharedPreferences.edit().putString(ADVERTISING_ID, advertisingId).apply()
     }
 
     fun setPushToken(fbPushToken: String) {

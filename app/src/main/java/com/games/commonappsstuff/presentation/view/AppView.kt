@@ -37,12 +37,12 @@ class AppView @JvmOverloads constructor(
             if (event.action == KeyEvent.ACTION_DOWN) {
                 when (keyCode) {
                     KeyEvent.KEYCODE_BACK -> {
+                        AppFragment.canGoBack = canGoBack()
                         if (this.canGoBack()) {
                             this.goBack()
                         } else {
-                            (context as Activity).finish()
+                            (context as Activity).onBackPressed()
                         }
-                        AppFragment.canGoBack = canGoBack()
                         return@setOnKeyListener true
                     }
                 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notifications_channel_name">App notifications</string>
+    <string name="appsflyer_dev_key" />
 </resources>

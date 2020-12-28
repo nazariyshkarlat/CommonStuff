@@ -4,10 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import com.games.commonappsstuff.BuildConfig
-import com.games.commonappsstuff.connection.ConnectionManager
-import com.games.commonappsstuff.connection.ConnectionManagerImpl
-import com.games.commonappsstuff.connection.UserAgentInterceptor
+import com.games.commonappsstuff.connection.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -33,7 +32,8 @@ object NetworkModule {
             getRetrofit(
                 getOkHttpClient(
                     getInterceptor(),
-                    UserAgentInterceptor()
+                    UserAgentInterceptor(),
+                    AcceptLanguageInterceptor()
                 )
             )
     }
@@ -51,10 +51,11 @@ object NetworkModule {
             .baseUrl(BASE_URL)
             .build()
 
-    private fun getOkHttpClient(loggingInterceptor: okhttp3.Interceptor, userAgentInterceptor: okhttp3.Interceptor) =
+    private fun getOkHttpClient(loggingInterceptor: okhttp3.Interceptor, userAgentInterceptor: okhttp3.Interceptor, acceptLanguageInterceptor: Interceptor) =
         OkHttpClient().newBuilder()
-            .addInterceptor(loggingInterceptor)
             .addInterceptor(userAgentInterceptor)
+            .addInterceptor(acceptLanguageInterceptor)
+            .addInterceptor(loggingInterceptor)
             .readTimeout(1, TimeUnit.MINUTES)
             .connectTimeout(2, TimeUnit.SECONDS)
             .build()

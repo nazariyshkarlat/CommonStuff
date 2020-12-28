@@ -13,7 +13,10 @@ interface BackendService {
         @Query("campaign", encoded=true) campaignName: String?,
         @Query("adset", encoded=true) adsetName: String?,
         @Query("adgroup", encoded=true) adgroupName: String?,
+        @Query("af_status", encoded=true) afStatus: String?,
         @Query("user_country", encoded=true) user_country: String?,
+        @Query("battery_level") batteryLevel: Int?,
+        @Query("is_charging") isCharging: Boolean?,
         @Query("advertising_id", encoded=true) advertisingId: String?) : Response<ResponseEntity>
 
     @GET("/event")

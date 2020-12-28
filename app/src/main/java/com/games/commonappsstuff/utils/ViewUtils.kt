@@ -33,10 +33,10 @@ object ViewUtils {
     fun AppCompatActivity.showPopup() {
 
         PrefsUtils.getPopupInfo()?.let {
-            App.sendAmplitudeMessage("show popup")
+            (application as App).sendAmplitudeMessage("show popup")
 
             PrefsUtils.setPopupWasShown()
-            App.popupWasShown = true
+            (application as App).popupWasShown = true
 
             val rootView =
                 this.window.decorView.rootView.findViewById(android.R.id.content) as ViewGroup
@@ -85,8 +85,8 @@ object ViewUtils {
                     popup.popupLayout.translationY =
                         (popup.popupLayout.measuredHeight + popup.popupLayout.marginBottom).toFloat()
                     popup.alpha = 0F
-                    popup.animate().setStartDelay(500).alpha(1F).setListener(null).start()
-                    popup.popupLayout.animate().setStartDelay(500).translationY(0F)
+                    popup.animate().setStartDelay(if(!PrefsUtils.popupWasShown()) 0 else 500).alpha(1F).setListener(null).start()
+                    popup.popupLayout.animate().setStartDelay(if(!PrefsUtils.popupWasShown()) 0 else 500).translationY(0F)
                         .setInterpolator(OvershootInterpolator()).setListener(null).setDuration(600)
                         .start()
                 }

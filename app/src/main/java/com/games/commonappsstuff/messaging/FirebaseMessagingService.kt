@@ -62,7 +62,7 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                 p0.data["type"] == "amplitude_event" -> {
 
                     if (Amplitude.getInstance() == null)
-                        initAmplitude()
+                        (application as App).initAmplitude(PrefsUtils.getAmplitudeApiKey()!!)
 
                     sendAmplitudeEvent(p0.data)
                 }
@@ -70,22 +70,6 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                     popupState.postValue(p0.data["popup_text"]!! to p0.data["popup_button"]!!)
                 }
             }
-        }
-    }
-
-    private fun initAmplitude(){
-        PrefsUtils.getAmplitudeApiKey()?.let {
-            Amplitude.getInstance()
-                .initialize(application.applicationContext, it)
-                .enableForegroundTracking(application)
-                .enableLogging(BuildConfig.DEBUG)
-                .identify(Identify().set("bundle_id", application.packageName))
-            App.amplitudeClientFuture.set(Amplitude.getInstance())
-            Log.d("DEFERRED_DEEP_LINK", "amplitude was initialized")
-            App.sendAmplitudeMessage(
-                "amplitude was initialized",
-                mapOf("network_is_absent" to connectionManager.isNetworkAbsent())
-            )
         }
     }
 
@@ -128,17 +112,18 @@ class FirebaseMessagingService : FirebaseMessagingService() {
             .apply {
                 if(bitmap != null) {
                     setLargeIcon(bitmap)
-                    setStyle(
-                        NotificationCompat
-                            .BigPictureStyle()
+                        .setStyle(NotificationCompat.BigPictureStyle()
                             .bigPicture(bitmap)
-                    )
+                            .bigLargeIcon(null))
                 }
             }
             .setContentIntent(openNotificationsPendingIntent)
             .setAutoCancel(true)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setPriority(NotificationCompat.PRIORITY_MAX)
+
+
+        (application as App).sendAmplitudeMessage("show push", mapOf("title" to title, "body" to text, "push_type" to pushType, "img_url" to imageUrl))
 
         NotificationManagerCompat.from(this).notify(IDUtils.createID(), notification.build())
     }

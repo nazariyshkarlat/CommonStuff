@@ -32,11 +32,6 @@ dependencies {
     // design
     implementation "androidx.appcompat:appcompat:$appcompat_version"
 
-    // view model
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-
     // retrofit and okhttp
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
@@ -70,4 +65,5 @@ dependencies {
     //ampitude
     implementation "com.amplitude:android-sdk:$amplitude_version"
 
+    implementation "com.facebook.android:facebook-android-sdk:$facebook_sdk_version"
 }

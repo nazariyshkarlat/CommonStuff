@@ -26,8 +26,6 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
--keep class com.games.commonappsstuff.connection.backend.** { *; }
-
 -keep class pro.userx.** { *; }
 -dontwarn pro.userx.**
 -keep class com.google.android.gms.ads.** { *; }

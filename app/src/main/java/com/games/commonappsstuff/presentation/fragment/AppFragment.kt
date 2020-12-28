@@ -15,14 +15,11 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProviders
 import com.appsflyer.AppsFlyerLib
 import com.games.commonappsstuff.App
 import com.games.commonappsstuff.R
 import com.games.commonappsstuff.di.NetworkModule
-import com.games.commonappsstuff.presentation.ViewModel
 import com.games.commonappsstuff.presentation.fragment.base.BaseFragment
-import com.games.commonappsstuff.utils.PrefsUtils
 import com.games.commonappsstuff.utils.ViewUtils.showPopup
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.app_view_layout.*
@@ -36,8 +33,6 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
         const val LINK = "WEB_VIEW_LINK"
         var canGoBack = false
     }
-
-    private var viewModel: ViewModel? = null
 
     private var mUploadMessage: ValueCallback<Uri>? = null
     private val READ_STORAGE = 3214
@@ -54,11 +49,6 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
 
         Log.d(LINK, arguments?.getString(LINK).toString())
 
-        viewModel = activity?.run {
-            ViewModelProviders.of(this)
-                .get(com.games.commonappsstuff.presentation.ViewModel::class.java)
-        }
-
         UserX.setWebView(appView)
 
         canGoBack = false
@@ -67,7 +57,7 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
-                App.sendAmplitudeMessage("webview url load finished", mapOf("url" to url))
+                (activity!!.application as App).sendAmplitudeMessage("webview url load finished", mapOf("url" to url))
 
                 if(appView != null) {
 
@@ -78,7 +68,7 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
                     }
 
                     checkAndShowPopup(url.toString())
-                    viewModel?.stopWaitingTimer()
+                    (activity!!.application as App).stopWaitingTimer()
                     appView.visibility = View.VISIBLE
                     canGoBack = appView.canGoBack()
                     removeSplashScreen()
@@ -140,8 +130,7 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
                 error: WebResourceError?
             ) {
                 if (NetworkModule.connectionManager.isNetworkAbsent()) {
-                    viewModel?.startAppState?.value =
-                        com.games.commonappsstuff.presentation.ViewModel.StartAppStates.ShowApp
+                    (activity!!.application as App).startAppState.value = App.StartAppStates.ShowApp
                 }
             }
 
@@ -152,8 +141,7 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
                 failingUrl: String?
             ) {
                 if (NetworkModule.connectionManager.isNetworkAbsent()) {
-                    viewModel?.startAppState?.value =
-                        com.games.commonappsstuff.presentation.ViewModel.StartAppStates.ShowApp
+                    (activity!!.application as App).startAppState.value = App.StartAppStates.ShowApp
                 }
             }
         }
@@ -267,12 +255,12 @@ class AppFragment : BaseFragment(R.layout.app_view_layout){
 
 
     private fun sendOpenPaymentPageEvent(){
-        viewModel?.sendPaymentPageOpenEvent()
+        (activity!!.application as App).sendPaymentPageOpenEvent()
     }
 
 
     private fun checkAndShowPopup(link: String){
-        if(CookieManager.getInstance().getCookie(link).contains("_gat_auth=1") && !App.popupWasShown) {
+        if(CookieManager.getInstance().getCookie(link).contains("_gat_auth=1")) {
             (activity as? AppCompatActivity)?.showPopup()
         }
     }

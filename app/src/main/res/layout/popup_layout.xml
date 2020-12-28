@@ -35,18 +35,15 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/money_bag_1f4b0" />
 
-        <com.games.commonappsstuff.presentation.view.StrokedTextView
+        <TextView
             android:id="@+id/popupLayoutText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/popupLayoutIcon"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
-            android:fontFamily="@font/futura_medium"
-            android:textColor="@color/popupTextColor"
+            android:textColor="@android:color/black"
             android:gravity="center"
-            app:textStrokeWidth="1"
-            app:textStrokeColor="@color/popupOutlineTextColor"
             android:textSize="17sp" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -54,7 +51,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:fontFamily="@font/futura_medium"
             android:layout_below="@+id/popupLayoutText"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
